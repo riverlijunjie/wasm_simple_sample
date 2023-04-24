@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 project("wasm_test")
-set(TARGET_NAME "wasm_test.js")
+set(TARGET_NAME "wasm_test")
 
 set(CMAKE_C_COMPILER emcc)
 set(CMAKE_CXX_COMPILER em++)

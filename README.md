@@ -1,3 +1,27 @@
+# install node
+```sh
+# https://volta.sh/
+# install Volta
+curl https://get.volta.sh | bash
+
+# install Node
+volta install node
+
+# start using Node
+node
+```
+
+# install emscripten
+```
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk
+git pull
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+```
+
+
 # build
 ```sh
 mkdir build
