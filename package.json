@@ -1,0 +1,15 @@
+{
+  "name": "wasm_simple_sample",
+  "version": "1.0.0",
+  "main": "node_app.js",
+  "scripts": {
+    "nodejs": "node node_app.js",
+    "browser": "node http-server.js"
+  },
+  "engines": {
+    "node": ">=18.6"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

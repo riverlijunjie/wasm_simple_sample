@@ -1,9 +1,0 @@
-# build
-    cmake ./
-    make
-
-# run 
-    source runme.sh
-
-
-
