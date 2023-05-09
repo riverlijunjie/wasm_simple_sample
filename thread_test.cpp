@@ -4,10 +4,13 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <fstream>
 #include <mutex>
 #include <thread>
 #include <time.h>
 #include <vector>
+#include <regex>
+#include <string>
 
 static void run_parallel(std::function<void(void)> func,
                          const unsigned int iterations = 1,
@@ -70,7 +73,71 @@ void async_test() {
   std::cout << "Wait result: " << f.get() << std::endl;
 }
 
+
+void io_test() {
+    std::string file_name = "test.txt";
+    const char txt_data[] = "It is a file io test sample!";
+
+    {
+      std::ofstream out_file(file_name.c_str(),
+                             std::ios::out | std::ios::binary);
+      if (out_file.is_open()) {
+        out_file.write(reinterpret_cast<const char *>(&txt_data[0]),
+                       sizeof(txt_data));
+      } else {
+        throw std::runtime_error("Could not save binary to " + file_name);
+      }
+    }
+
+    {
+      FILE *fp = fopen(file_name.c_str(), "rb");
+      if (fp) {
+        fseek(fp, 0, SEEK_END);
+        auto sz = ftell(fp);
+        if (sz < 0) {
+          fclose(fp);
+          return;
+        }
+        auto nsize = static_cast<size_t>(sz);
+
+        fseek(fp, 0, SEEK_SET);
+
+        std::vector<uint8_t> ret(nsize);
+
+        auto res = fread(ret.data(), sizeof(uint8_t), nsize, fp);
+        std::cout << "IO read: " << ret.data() << std::endl;
+        fclose(fp);
+        return;
+      }
+    }
+}
+
+void regex_test() {
+  std::vector<std::string> patterns{
+        R"(.*QuantGroupConvBackpropData3D.*)",
+        R"(.*QuantConvBackpropData3D.*)",
+        R"(.*QuantConvBackpropData2D.*)",
+        R"(.*QuantGroupConvBackpropData2D.*)",
+  };
+
+  std::string input = "abc_QuantConvBackpropData2D_xyz";
+
+  for (const auto &pattern : patterns) {
+    std::regex re(pattern);
+    if (std::regex_match(input, re)) {
+      std::cout << input.c_str() << "is matched by " << pattern.c_str()
+                << std::endl;
+    } else {
+      std::cout << pattern.c_str() << "is not matched..." << std::endl;
+    }
+  }
+  std::cout << "regex test is done !" << std::endl;
+}
+
+
 int main(int argc, char **argv) {
   thread_test();
   async_test();
+  io_test();
+  regex_test();
 }
